@@ -6,7 +6,6 @@ Created on Wed Jul 20 21:44:49 2016
 
 import numpy as np
 import cv2
-#import winsound
 import os
 import Classes as C
 
@@ -23,7 +22,7 @@ def Perspective_Transform_Points(img_c):
         Output:     Points for transform
     """
 
-##### Upper and lower HSV colour boundries for corner markers [Calibration Values]
+##### Upper and lower HSV colour boundaries for corner markers [Calibration Values]
     corner_lower_PT = np.array([0, 0, 200], dtype = "uint8") # [0, 0, 200] | [100, 50, 150]
     corner_upper_PT = np.array([100, 100, 255], dtype = "uint8") # [180, 55, 255] | [160, 100, 255]
 
@@ -31,10 +30,10 @@ def Perspective_Transform_Points(img_c):
     # Copy image in HSV colourspace
     img_hsv_PT = cv2.cvtColor(img_c, cv2.COLOR_BGR2HSV)
 
-    # Get image dimentions
+    # Get image dimensions
     rows_PT, cols_PT, chan_PT = img_hsv_PT.shape
 
-    # Search untill all corner markers are found by continually decreasing HSV Value lower threshold
+    # Search until all corner markers are found by continually decreasing HSV Value lower threshold
     top_left_found_PT = False
     top_right_found_PT = False
     bottom_left_found_PT = False
@@ -44,7 +43,7 @@ def Perspective_Transform_Points(img_c):
         # Find colour within specified boundaries and apply mask
         mask_PT = cv2.inRange(img_hsv_PT, corner_lower_PT, corner_upper_PT)
 
-######### Define search area's dimentions [Calibration Values]
+######### Define search area's dimensions [Calibration Values]
         y_PT = 0.125
         top_x_PT = 0.125
         bottom_x_PT = 0.075
@@ -193,7 +192,7 @@ def Perspective_Transform(img_PT, corner_PT):
         Output:     Straightened colour image with constant image depth
     """
 
-    # Get image dimentions
+    # Get image dimensions
     rows_PT, cols_PT, chan_PT = img_PT.shape
 
     # Define points for transform
@@ -209,22 +208,22 @@ def Perspective_Transform(img_PT, corner_PT):
 
 
 
-def Clear_Background(img_c):
+def Clear_Background(img_c,background_lower,background_upper):
     """
     Find puzzle layout background and set it to black
         Input:      Colour puzzle layout image
         Output:     Colour image with its background set to black
     """
 
-##### Upper and lower boundries background [Calibration Values]
-    background_lower = np.array([0, 0, 140], dtype = "uint8") # [0, 0, 190] is somewhat gray in HSV
-    background_upper = np.array([255, 80, 255], dtype = "uint8") # [0, 0, 255] is white in HSV
+##### Upper and lower boundaries background [Calibration Values]
+#    background_lower = np.array([0, 0, 140], dtype = "uint8") # [0, 0, 190] is somewhat gray in HSV
+#    background_upper = np.array([255, 80, 255], dtype = "uint8") # [0, 0, 255] is white in HSV
 
 
     # Copy image in HSV colourspace
     img_hsv_B = cv2.cvtColor(img_c, cv2.COLOR_BGR2HSV)
 
-    # Get image dimentions
+    # Get image dimensions
     rows_B, cols_B, chan_B = img_hsv_B.shape
 
     # Find colour within specified boundaries and apply mask
@@ -255,7 +254,7 @@ def Binarise(img_b):
         Output:     Binarised image
     """
 
-    # Copy image as grayscale
+    # Copy image as greyscale
     img_bw_BIN = cv2.cvtColor(img_b, cv2.COLOR_BGR2GRAY)
 
 ##### Apply Gaussian filter [Calibration Values]
@@ -277,7 +276,7 @@ def Detect_Pieces(img_bin, img_c, avgArea, PuzzlePCNT):
     # Copy image
     img_DC = np.copy(img_c)
 
-    # Get image dimentions
+    # Get image dimensions
     rows_DC, cols_DC, chan_DC = img_DC.shape
 
     # Colours to use for drawing
@@ -314,7 +313,7 @@ def Detect_Pieces(img_bin, img_c, avgArea, PuzzlePCNT):
     min_fo_area = 100
     max_fo_area = 26000
 
-    # Loop over contours to find valaid or overlapping ones
+    # Loop over contours to find valid or overlapping ones
     for h, cnt in reversed(list(enumerate(contours))):
         area = int(np.ceil(cv2.contourArea(cnt)))
         #print area
@@ -381,7 +380,7 @@ def Separate_Overlap(img_bin, img_dp, overlap_cnt):
     img_bin_SO = np.copy(img_bin)
     img_SO = np.copy(img_dp)
 
-    # Get image dimentions
+    # Get image dimensions
     rows_SO, cols_SO = img_bin_SO.shape
 
     # Colours to use for drawing
@@ -415,7 +414,7 @@ def Separate_Overlap(img_bin, img_dp, overlap_cnt):
         man_rad = 30
         min_man_rad = 15
 
-        # Search allong center line for suficient manipulator space
+        # Search along center line for sufficient manipulator space
         spot_found = False
         while not spot_found:
             for y in xrange(rows_SO-1,-1, -3):
@@ -469,7 +468,7 @@ def Separate_Overlap(img_bin, img_dp, overlap_cnt):
             y_search_step = 150
             min_x_search_step = 10
 
-            # Search untill sufficient open space is found by decreasing search step if necessary
+            # Search untll sufficient open space is found by decreasing search step if necessary
             spot_found = False
             while not spot_found:
                 for y in xrange(rows_SO-edge_search_dist, edge_search_dist, -y_search_step):
@@ -539,10 +538,10 @@ def Classify_Pieces(img_b, piece_cnt, edge_num,avgPC_W, avgPC_H):
     # Copy images
     img_b_PC = np.copy(img_b)
 
-    # Get image dimentions
+    # Get image dimensions
     rows_PC, cols_PC, chan_PC = img_b_PC.shape
 
-##### To check if all edges were found [Calibtarion Values]
+##### To check if all edges were found [Calibration Values]
 #    edge_num = 20 #defined in parameters
 
     edge_count = 0
@@ -605,7 +604,7 @@ def Classify_Pieces(img_b, piece_cnt, edge_num,avgPC_W, avgPC_H):
         maxLineGap = avgPC_W/5
         lines = cv2.HoughLines(img_piece_edge, 1, np.pi/180, minLineLength, maxLineGap)
         try:
-            tmp=len(lines) # might be no line in a puzlle piece
+            tmp=len(lines) # might be no line in a puzle piece
             A_1 = []
             A_2 = []
             A_3 = []
@@ -839,7 +838,7 @@ def Perspective_Correction(img_ori,BoardSize):
 
     corner_PT= cv2.convexHull(border,True)
     #img_PT=Perspective_Transform(img_ori, hull )
-    print corner_PT
+    #print corner_PT
     #scale the picture to match ratio of board size
     cols_PT =BoardSize[0]
     rows_PT =BoardSize[1]

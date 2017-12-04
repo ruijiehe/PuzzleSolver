@@ -12,8 +12,8 @@ Recalc_PT_count = 0
 
 PT_bool = False         # Perform Perspective Transform
 DP_bool = False         # Detect Pieces
-CP_bool = False         # Clasify Pieces
-SO_bool = False         # Seperate Overlapping Pieces
+CP_bool = False         # Classify Pieces
+SO_bool = False         # Separate Overlapping Pieces
 CP_bool = False         # Classify Piece
 
 BoardSize=[757,508] #unit in mm
@@ -22,7 +22,7 @@ PuzzlePCNT=24
 edgenum=2*sum(PieceMat)
 PuzzleSize=[284,220] #unit in mm
 avgArea=int(np.ceil(PuzzleSize[0]*PuzzleSize[1]/float(PuzzlePCNT)))
-##### Upper and lower boundries background [Calibration Values]
+##### Upper and lower boundaries background [Calibration Values]
 background_lower = np.array([0, 0, 140], dtype = "uint8") # [0, 0, 190] is somewhat gray in HSV
 background_upper = np.array([255, 80, 255], dtype = "uint8") # [0, 0, 255] is white in HSV
 
@@ -83,7 +83,7 @@ while(True):
     k = cv2.waitKey(1)
     if k == ord("q"):       # Quit
         break
-    #elif k == ord("1"):     # Recalclculate Points
+    #elif k == ord("1"):     # Recalculate Points
         #pts_min = [[0, 0], [np.inf, 0], [np.inf, np.inf], [0, np.inf]]
         #Recalc_PT_bool = True
         #Recalc_PT_count = 0
@@ -101,7 +101,7 @@ while(True):
         SO_bool = False
         CP_bool = False
         SOLVE_bool = False
-    elif k == ord("4"):     # Seperate Overlapping Pieces
+    elif k == ord("4"):     # Separate Overlapping Pieces
         PT_bool = True
         DP_bool = True
         SO_bool = not SO_bool
