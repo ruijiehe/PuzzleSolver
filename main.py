@@ -46,7 +46,7 @@ while(True):
             #print 'detecting piece'
             img_B = F1.Clear_Background(img_C,background_lower,background_upper)
             img_BIN = F1.Binarise(img_B)
-			F1.showimg(img_BIN)
+            F1.showimg(img_BIN)
             img_DP, piece_cnt, overlap_cnt = F1.Detect_Pieces(img_BIN, img_C, avgArea,PuzzlePCNT)
             img = np.copy(img_DP)
             if SO_bool and np.shape(overlap_cnt)[0] != 0:
